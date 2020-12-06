@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Grocerzz</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+      crossorigin="anonymous"
+    />
+    <script type="text/javascript" src="scripts/Grocery.js"></script>
+    <script type="text/javascript" src="scripts/User.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="nav">
+        <div class="logo">
+          <img
+            src="file:///Users/deepanshugupta/Documents/Pesto-Capstone-Project/assets/logo.png"
+            alt="Grocerzz"
+          />
+        </div>
+      </div>
+      <div id="main-content">
+        <form>
+          <div class="field">
+            <input
+              name="username"
+              id="username"
+              placeholder="Username"
+              type="text"
+            />
+          </div>
+          <div class="field">
+            <input
+              name="password"
+              id="password"
+              placeholder="Password"
+              type="password"
+            />
+          </div>
+          <div class="fetch-buttons">
+            <input
+              type="button"
+              name="fecth-old"
+              onclick="handleFetchOldList()"
+              value="Fetch Old List"
+              class="fetch-button"
+            />
+            <input
+              type="button"
+              name="create-new"
+              onclick="handleFetchNewList()"
+              value="Create New List"
+              class="fetch-button"
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
