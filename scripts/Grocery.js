@@ -75,7 +75,7 @@ function getItemList(editingItem) {
   let savedItemsHtml = "";
   const newItemHtml = `<li class="grocery-list-item">
       <span class="field item">
-        <input type='textarea' id='new-item' placeholder='Item Name'/>
+        <input type='textarea' id='new-item' autofocus='true' placeholder='Item Name'/>
       </span>
       <span onclick='addItemToList()' class="plus-icon">
         <i class="fa fa-plus icon"></i>
@@ -95,7 +95,7 @@ function getItemList(editingItem) {
       </span>
       </li>`;
       if (editingItem && item === editingItem) {
-        itemHtml = `<li class="grocery-list-item"><span class="field item"><input type='textarea' placeholder='Item Name' id='edit-item' value='${item}' /></span><span onclick="addEditedItemToList('${editingItem}')">
+        itemHtml = `<li class="grocery-list-item"><span class="field item"><input type='textarea' placeholder='Item Name' id='edit-item' autofocus='true' value='${item}' /></span><span onclick="addEditedItemToList('${editingItem}')">
           <i class="fa fa-check icon"></i>
         </span>
         <span>
@@ -111,9 +111,11 @@ function getItemList(editingItem) {
 
   const listHtml = `<ul class="grocery-list">${savedItemsHtml}</ul>`;
 
-  document.getElementById("main-content").innerHTML = listHtml;
-  if (savedList && savedList.length)
-    document.getElementById(
-      "main-content"
-    ).innerHTML += `<div class="save-button"><input type="button" onclick="handleSave()" class="fetch-button" value="Save & Exit"  /></div>`;
+  const itemsCountHtml = `<div class="items-count"><div>Cart Limit : 5</div><div>Items Left : ${
+    5 - savedList.length
+  } </div></div>`;
+  const saveButtonHtml = `<div class="save-button"><input type="button" onclick="handleSave()" class="fetch-button" value="Save & Exit"  /></div>`;
+
+  document.getElementById("main-content").innerHTML =
+    itemsCountHtml + listHtml + saveButtonHtml;
 }

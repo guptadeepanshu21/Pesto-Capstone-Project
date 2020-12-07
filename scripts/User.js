@@ -12,12 +12,18 @@ function getUserList() {
   return userList;
 }
 
+function checkIfUserExists(username) {
+  const userList = getUserList();
+  const user = userList.find((user) => user.username === username);
+  return user ? true : false;
+}
+
 function validateUser(username, password) {
   const userList = getUserList();
   const user = userList.find(
     (user) => user.username === username && user.password === password
   );
-  return user;
+  return user ? true : false;
 }
 
 function addUser(username, password) {
@@ -31,20 +37,22 @@ function addUser(username, password) {
     }
     localStorage.setItem("users", JSON.stringify(userList));
   } else {
-    setError("Enter Username or Password");
-    throw new Error("authentication error");
+    setError("Enter valid Username or Password");
   }
 }
 
 function loginUser() {
-  let username = document.getElementById("username").value;
-  let password = document.getElementById("password").value;
-  let user = validateUser(username, password);
-  if (user) {
-    localStorage.setItem("currentUser", user.username);
-  } else {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  const isExistingUser = checkIfUserExists(username);
+  let isAuthenticated = validateUser(username, password);
+  if (isExistingUser && isAuthenticated) {
+    localStorage.setItem("currentUser", username);
+  } else if (!isExistingUser) {
     addUser(username, password);
     localStorage.setItem("currentUser", username);
+  } else {
+    setError("Enter correct Username or Password");
   }
 }
 
@@ -54,4 +62,5 @@ function logoutUser() {
 
 function setError(message = "Please try again!") {
   alert(message);
+  throw new Error(message);
 }
