@@ -69,6 +69,35 @@ function handleSave() {
   location.href = "index.html";
 }
 
+function renderListItem(item) {
+  return `<li class="grocery-list-item">
+      <span class="item">
+        ${item}
+      </span>
+      <span onclick="getItemList('${item}')" title="Edit">
+        <i class="fa fa-pencil icon"></i>
+      </span>
+      <span onclick="deleteItemFromList('${item}')" title="Delete">
+        <i class="fa fa-remove icon"></i>
+      </span>
+    </li>`;
+}
+
+function renderListItemEdit(item, editingItem) {
+  return `<li class="grocery-list-item">
+    <span class="field item">
+      <input type='textarea' placeholder='Item Name' 
+        id='edit-item' autofocus='true' value='${item}' />
+    </span>
+    <span onclick="addEditedItemToList('${editingItem}')" title="Save">
+      <i class="fa fa-check icon"></i>
+    </span>
+    <span onclick="deleteItemFromList('${item}')" title="Delete">
+      <i class="fa fa-remove icon"></i>
+    </span>
+  </li>`;
+}
+
 function getItemList(editingItem) {
   let savedList = getGroceryList();
 
@@ -77,31 +106,16 @@ function getItemList(editingItem) {
       <span class="field item">
         <input type='textarea' id='new-item' autofocus='true' placeholder='Item Name'/>
       </span>
-      <span onclick='addItemToList()' class="plus-icon">
+      <span onclick='addItemToList()' class="plus-icon" title="Add">
         <i class="fa fa-plus icon"></i>
       </span>
     </li>`;
 
   savedList &&
     savedList.map((item) => {
-      let itemHtml = `<li class="grocery-list-item"><span class="item">
-        ${item}
-      </span>
-      <span onclick="getItemList('${item}')">
-        <i class="fa fa-pencil icon"></i>
-      </span>
-      <span onclick="deleteItemFromList('${item}')">
-        <i class="fa fa-remove icon"></i>
-      </span>
-      </li>`;
+      let itemHtml = renderListItem(item);
       if (editingItem && item === editingItem) {
-        itemHtml = `<li class="grocery-list-item"><span class="field item"><input type='textarea' placeholder='Item Name' id='edit-item' autofocus='true' value='${item}' /></span><span onclick="addEditedItemToList('${editingItem}')">
-          <i class="fa fa-check icon"></i>
-        </span>
-        <span>
-        <i class="fa fa-remove icon"></i>
-        </span>
-      </li>`;
+        itemHtml = renderListItemEdit(item, editingItem);
       }
       savedItemsHtml += itemHtml;
     });
