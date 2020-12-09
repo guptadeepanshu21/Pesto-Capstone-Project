@@ -1,3 +1,5 @@
+const CART_LIMIT = 5;
+
 function getGroceryList() {
   const currentUser = getCurrentUser();
   let groceryList = currentUser ? currentUser.groceryList : [];
@@ -13,7 +15,7 @@ function saveGroceryListInStore(groceryList) {
     }
     return user;
   });
-  localStorage.setItem("users", JSON.stringify(updatedUserList));
+  localStorage.setItem(ALL_USERS_DATA_KEY, JSON.stringify(updatedUserList));
   getItemList();
 }
 
@@ -22,7 +24,7 @@ function addItemToList() {
   let savedList = getGroceryList();
 
   if (newItem && !savedList.includes(newItem)) {
-    if (savedList && savedList.length < 5) {
+    if (savedList && savedList.length < CART_LIMIT) {
       savedList = [...savedList, newItem];
       saveGroceryListInStore(savedList);
     } else {
@@ -98,18 +100,22 @@ function renderListItemEdit(item, editingItem) {
   </li>`;
 }
 
+function renderNewItem() {
+  return `<li class="grocery-list-item">
+  <span class="field item">
+    <input type='textarea' id='new-item' autofocus='true' placeholder='Item Name'/>
+  </span>
+  <span onclick='addItemToList()' class="plus-icon" title="Add">
+    <i class="fa fa-plus icon"></i>
+  </span>
+</li>`;
+}
+
 function getItemList(editingItem) {
   let savedList = getGroceryList();
 
   let savedItemsHtml = "";
-  const newItemHtml = `<li class="grocery-list-item">
-      <span class="field item">
-        <input type='textarea' id='new-item' autofocus='true' placeholder='Item Name'/>
-      </span>
-      <span onclick='addItemToList()' class="plus-icon" title="Add">
-        <i class="fa fa-plus icon"></i>
-      </span>
-    </li>`;
+  const newItemHtml = renderNewItem();
 
   savedList &&
     savedList.map((item) => {
@@ -119,17 +125,26 @@ function getItemList(editingItem) {
       }
       savedItemsHtml += itemHtml;
     });
-  if (savedList && savedList.length < 5) {
+
+  // limit user adding new items upto Cart Limit
+  if (savedList && savedList.length < CART_LIMIT) {
     savedItemsHtml += newItemHtml;
   }
 
   const listHtml = `<ul class="grocery-list">${savedItemsHtml}</ul>`;
 
-  const itemsCountHtml = `<div class="items-count"><div>Cart Limit : 5</div><div>Items Left : ${
-    5 - savedList.length
-  } </div></div>`;
-  const saveButtonHtml = `<div class="save-button"><input type="button" onclick="handleSave()" class="fetch-button" value="Save & Exit"  /></div>`;
+  const itemsCountHtml = `<div class="items-count">
+      <div>
+        Cart Limit : ${CART_LIMIT}
+      </div>
+      <div>
+        Items Left : ${CART_LIMIT - savedList.length}
+      </div>
+    </div>`;
 
-  document.getElementById("main-content").innerHTML =
-    itemsCountHtml + listHtml + saveButtonHtml;
+  const saveButtonHtml = `<div class="save-button">
+    <input type="button" onclick="handleSave()" class="fetch-button" value="Save & Exit"  />
+  </div>`;
+
+  document.getElementById("main-content").innerHTML = itemsCountHtml + listHtml + saveButtonHtml;
 }

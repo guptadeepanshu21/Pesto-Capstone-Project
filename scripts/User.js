@@ -1,14 +1,21 @@
+const USER_DATA_LIMIT = 3;
+const INCORRECT_CREDENTIALS_ERROR_MESSAGE =
+  "Please Enter Correct Username or Password";
+const INVALID_CREDENTIALS_ERROR_MESSAGE =
+  "Please Enter Valid Username or Password";
+const DEFAULT_ERROR_MESSAGE = "Something Went Wrong!";
+const ALL_USERS_DATA_KEY = "users";
+const ACTIVE_USER_DATA_KEY = "currentUser";
+
 function getCurrentUser() {
-  let currentUser = localStorage.getItem("currentUser") || "";
+  let currentUser = getKeyFromStore(ACTIVE_USER_DATA_KEY) || "";
   const userList = getUserList();
   let userDetails = userList.find((user) => user.username === currentUser);
   return userDetails;
 }
 
 function getUserList() {
-  const userList = localStorage.getItem("users")
-    ? JSON.parse(localStorage.getItem("users"))
-    : [];
+  const userList = getKeyFromStore(ALL_USERS_DATA_KEY) || [];
   return userList;
 }
 
@@ -30,14 +37,15 @@ function addUser(username, password) {
   if (username && password) {
     let userList = getUserList();
     let newUser = { username, password, groceryList: [] };
-    if (userList.length < 3) {
+    if (userList.length < USER_DATA_LIMIT) {
       userList.push(newUser);
     } else {
-      userList = [userList[1], userList[2], newUser];
+      userList.splice(0, 1);
+      userList.push(newUser);
     }
-    localStorage.setItem("users", JSON.stringify(userList));
+    saveKeyInStore(ALL_USERS_DATA_KEY, userList);
   } else {
-    setError("Enter valid Username or Password");
+    setError(INVALID_CREDENTIALS_ERROR_MESSAGE);
   }
 }
 
@@ -47,20 +55,20 @@ function loginUser() {
   const isExistingUser = checkIfUserExists(username);
   let isAuthenticated = validateUser(username, password);
   if (isExistingUser && isAuthenticated) {
-    localStorage.setItem("currentUser", username);
+    saveKeyInStore(ACTIVE_USER_DATA_KEY, username);
   } else if (!isExistingUser) {
     addUser(username, password);
-    localStorage.setItem("currentUser", username);
+    saveKeyInStore(ACTIVE_USER_DATA_KEY, username);
   } else {
-    setError("Enter correct Username or Password");
+    setError(INCORRECT_CREDENTIALS_ERROR_MESSAGE);
   }
 }
 
 function logoutUser() {
-  localStorage.removeItem("currentUser");
+  deleteKeyFromStore(ACTIVE_USER_DATA_KEY);
 }
 
-function setError(message = "Please try again!") {
+function setError(message = DEFAULT_ERROR_MESSAGE) {
   alert(message);
   throw new Error(message);
 }
